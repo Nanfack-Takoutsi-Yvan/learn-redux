@@ -102,16 +102,3 @@ function createStore(reducer) {
     dispatch
   }
 }
-
-const store = createStore(app)
-
-store.subscribe(() => console.log('the new state is: ', store.getState()))
-
-store.dispatch({
-  type: 'ADD_TODO',
-  todo: {
-    id: 0, 
-    name: 'Learn redux',
-    complete: false
-  }
-})
