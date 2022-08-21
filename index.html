@@ -22,10 +22,35 @@
     <ul id="goals"></ul>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.7.2/redux.min.js"></script>
   <script src="./index.js"></script>
   <script type="text/javascript">
-    const store = createStore(app)
-    store.subscribe(() => console.log('the new state is: ', store.getState()))
+
+    const checker = (store) => (next) => (action) => {
+      if (action.type === ADD_TODO && action.todo.name.toLowerCase().includes('bitcoin')) {
+        return alert('Nope, this is a bad idea !')
+
+      }
+
+      if (action.type === ADD_GOAL && action.goal.name.toLowerCase().includes('bitcoin')) {
+        return alert('Nope, this is a bad idea')
+
+      }
+
+      return next(action)
+    }
+
+    const logger = (store) => (next) => (action) => {
+      console.group(action.type)
+        console.log('The action: ', action)
+        const result = next(action)
+        console.log('The new state: ', store.getState())
+      console.groupEnd()
+
+      return result
+    }
+
+    const store = Redux.createStore(Redux.combineReducers({todos, goals}), Redux.applyMiddleware(logger, checker))
 
     
     function generateId () {
