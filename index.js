@@ -4,6 +4,7 @@ const TOGGLE_TODO = 'TOGGLE_TODO'
 const REMOVE_TODO = 'REMOVE_TODO'
 const ADD_GOAL = 'ADD_GOAL'
 const REMOVE_GOAL = 'REMOVE_GOAL'
+const RECEIVE_DATA = 'RECEIVE_DATA'
 
 // Utils functions
 function addTodoAction (todo) {
@@ -39,6 +40,14 @@ function removeGoalAction (id) {
   }
 }
 
+function receiveDataAction (todos, goals) {
+  return {
+    type: RECEIVE_DATA,
+    todos,
+    goals
+  }
+}
+
 // Reducers
 function todos (state = [], action) {
   switch (action.type) {
@@ -50,6 +59,9 @@ function todos (state = [], action) {
 
     case TOGGLE_TODO:
       return state.map((todo) => todo.id !== action.id ? todo : Object.assign({}, todo, {complete: !todo.complete}))
+
+    case RECEIVE_DATA: 
+      return action.todos
 
     default: 
       return state
@@ -65,15 +77,21 @@ function goals (state = [], action) {
     case REMOVE_GOAL: 
       return state.filter(goal => goal.id !== action.id)
 
+    case RECEIVE_DATA: 
+      return action.goals
+
     default: 
       return state
   }
 }
 
-function app (state = {}, action) {
-  return {
-    todos: todos(state.todos, action),
-    goals: goals(state.goals, action)
+function loading (state = true, action) {
+  switch(action.type) {
+    case RECEIVE_DATA: 
+      return false
+
+    default: 
+      return state
   }
 }
 
